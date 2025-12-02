@@ -325,6 +325,3 @@ For detailed deployment instructions, see the deployment section in your hosting
 - Role filter dropdown dynamically populates from database
 - Color-coded role badges for visual identification
 
-## License
-
-ISC
