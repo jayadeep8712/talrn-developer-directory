@@ -5,13 +5,15 @@ A full-stack web application for managing and discovering talented developers. B
 ## Features
 
 - ✅ Add developer details (Name, Role, Tech Stack, Experience)
+- ✅ Edit developer information
+- ✅ Delete developers
 - ✅ View list of all developers in a clean, responsive UI
 - ✅ Search developers by name or tech stack
-- ✅ Filter developers by role (Frontend, Backend, Full-Stack)
+- ✅ Filter developers by role (dynamic role list)
 - ✅ Form validation with error messages
 - ✅ Toast notifications for success/error feedback
 - ✅ Responsive design with Tailwind CSS
-- ✅ Modern, clean UI with gradient backgrounds
+- ✅ Professional UI with color-coded role badges
 
 ## Tech Stack
 
@@ -41,7 +43,7 @@ H-GEMINIAPI/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── DeveloperForm.jsx    # Form component
+│   │   │   ├── DeveloperForm.jsx    # Form component (Add/Edit)
 │   │   │   ├── DeveloperList.jsx    # List display component
 │   │   │   └── SearchFilter.jsx     # Search/filter component
 │   │   ├── services/
@@ -128,7 +130,7 @@ Returns a list of all developers.
     {
       "id": "1234567890",
       "name": "John Doe",
-      "role": "Full-Stack",
+      "role": "Full-Stack Developer",
       "techStack": ["React", "Node.js", "MongoDB"],
       "experience": 5,
       "createdAt": "2024-01-01T00:00:00.000Z"
@@ -144,7 +146,7 @@ Adds a new developer to the directory.
 ```json
 {
   "name": "John Doe",
-  "role": "Full-Stack",
+  "role": "Full-Stack Developer",
   "techStack": "React, Node.js, MongoDB",
   "experience": 5
 }
@@ -158,11 +160,51 @@ Adds a new developer to the directory.
   "data": {
     "id": "1234567890",
     "name": "John Doe",
-    "role": "Full-Stack",
+    "role": "Full-Stack Developer",
     "techStack": ["React", "Node.js", "MongoDB"],
     "experience": 5,
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
+}
+```
+
+### PUT /developers/:id
+Updates an existing developer.
+
+**Request Body:**
+```json
+{
+  "name": "John Doe",
+  "role": "Full-Stack Developer",
+  "techStack": "React, Node.js, MongoDB",
+  "experience": 6
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Developer updated successfully",
+  "data": {
+    "id": "1234567890",
+    "name": "John Doe",
+    "role": "Full-Stack Developer",
+    "techStack": ["React", "Node.js", "MongoDB"],
+    "experience": 6,
+    "updatedAt": "2024-01-02T00:00:00.000Z"
+  }
+}
+```
+
+### DELETE /developers/:id
+Deletes a developer from the directory.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Developer deleted successfully"
 }
 ```
 
@@ -177,41 +219,101 @@ Health check endpoint.
 }
 ```
 
-## Usage
+## Usage Guide
 
-1. **Add a Developer:**
-   - Fill in the form on the left side with developer details
-   - Select a role from the dropdown (Frontend, Backend, or Full-Stack)
-   - Enter tech stack as comma-separated values (e.g., "React, Node.js, MongoDB")
-   - Enter experience in years (can be a decimal like 3.5)
-   - Click "Add Developer" button
+### Adding a Developer
 
-2. **View Developers:**
-   - All developers are displayed in the list on the right side
-   - Each developer card shows name, role badge, tech stack tags, and experience
+1. Fill in the form on the left side with developer details:
+   - **Name**: Enter the developer's full name
+   - **Role**: Select from dropdown (Frontend, Backend, Full-Stack, DevOps, Mobile, QA, Data Scientist, UI/UX Designer, Product Manager, Tech Lead, or "Other" for custom roles)
+   - **Tech Stack**: Enter technologies separated by commas (e.g., "React, Node.js, MongoDB")
+   - **Experience**: Enter years of experience (can be decimal like 3.5)
+2. Click "Add Developer" button
+3. You'll see a success toast notification
+4. The new developer appears in the list immediately
 
-3. **Search Developers:**
-   - Use the search box to filter by name or tech stack
-   - The search is case-insensitive and matches partial strings
+### Editing a Developer
 
-4. **Filter by Role:**
-   - Use the role dropdown to filter developers by their role
-   - Select "All Roles" to show everyone
+1. Click the "Edit" button on any developer card
+2. The form will populate with the developer's current information
+3. Make your changes
+4. Click "Update Developer" to save changes
+5. Or click "Cancel" to exit edit mode without saving
 
-5. **Clear Filters:**
-   - Click "Clear Filters" button to reset search and role filters
+### Deleting a Developer
+
+1. Click the "Delete" button on any developer card
+2. Confirm the deletion in the popup dialog
+3. The developer will be removed from the directory
+4. A success toast notification will appear
+
+### Searching Developers
+
+- **Search by Name**: Type in the search box to filter by developer name
+- **Search by Tech Stack**: Type a technology name to find developers with that skill
+- Search is case-insensitive and matches partial strings
+- Example: Typing "react" finds developers with "React" in their tech stack
+
+### Filtering by Role
+
+- Use the role dropdown to filter developers by their role
+- The dropdown dynamically shows all roles present in your database
+- Select "All Roles" to show everyone
+- Filter works in combination with search
+
+### Role Badge Colors
+
+Each role has a distinct color for easy identification:
+- **Frontend** → Blue
+- **Backend** → Green
+- **Full-Stack** → Purple
+- **DevOps** → Orange
+- **Mobile** → Indigo
+- **QA** → Yellow
+- **Data Scientist** → Pink
+- **UI/UX Designer** → Cyan
+- **Product Manager** → Teal
+- **Tech Lead** → Red
+- **Security Engineer** → Rose
+- **ML Engineer** → Violet
+- **Blockchain Developer** → Amber
+- **Other roles** → Gray
 
 ## Validation
 
 The form includes client-side and server-side validation:
-- **Name:** Required, cannot be empty
-- **Role:** Required, must be one of: Frontend, Backend, Full-Stack
-- **Tech Stack:** Required, cannot be empty
-- **Experience:** Required, must be a non-negative number
+- **Name**: Required, cannot be empty
+- **Role**: Required, must be selected from dropdown or entered as custom role
+- **Tech Stack**: Required, cannot be empty
+- **Experience**: Required, must be a non-negative number
 
 ## Data Storage
 
-Developers are stored in a JSON file at `backend/data/developers.json`. The file is automatically created if it doesn't exist and is updated whenever a new developer is added.
+Developers are stored in a JSON file at `backend/data/developers.json`. The file is automatically created if it doesn't exist and is updated whenever a developer is added, updated, or deleted.
+
+## Deployment
+
+### Quick Deploy to Vercel (Recommended)
+
+#### Backend
+1. Install Vercel CLI: `npm i -g vercel`
+2. Navigate to backend: `cd backend`
+3. Run: `vercel`
+4. Follow prompts and set root directory to `backend`
+
+#### Frontend
+1. Navigate to frontend: `cd frontend`
+2. Run: `vercel`
+3. Add environment variable: `VITE_API_URL` = your backend URL
+4. Redeploy
+
+### Other Hosting Options
+
+- **Netlify** (Frontend) + **Railway** (Backend)
+- **Render** (Both frontend & backend)
+- **Heroku** (Backend only, paid)
+
+For detailed deployment instructions, see the deployment section in your hosting platform's documentation.
 
 ## Development Notes
 
@@ -220,8 +322,9 @@ Developers are stored in a JSON file at `backend/data/developers.json`. The file
 - Toast notifications provide user feedback for all operations
 - The UI is fully responsive and works on mobile, tablet, and desktop
 - Tailwind CSS is used for all styling
+- Role filter dropdown dynamically populates from database
+- Color-coded role badges for visual identification
 
 ## License
 
 ISC
-
